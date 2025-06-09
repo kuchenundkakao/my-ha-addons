@@ -17,7 +17,8 @@ RUN apk add --no-cache \
 # to get the Audiobookshelf application itself. Let's combine them properly.
 
 # Stage 1: Build/fetch Audiobookshelf from its official image
-FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app # Or use a specific version like :2.11.1
+FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app 
+# Or use a specific version like :2.11.1
 
 # Stage 2: Build the final add-on image based on the HA base image
 FROM $BUILD_FROM
@@ -39,7 +40,8 @@ RUN apk add --no-cache \
 
 # Copy the Audiobookshelf application files from the builder stage (audiobookshelf_app)
 COPY --from=audiobookshelf_app /usr/bin/audiobookshelf /usr/bin/audiobookshelf
-COPY --from=audiobookshelf_app /app /app # Copy the entire /app directory from the official image, which contains Node.js app etc.
+COPY --from=audiobookshelf_app /app /app 
+# Copy the entire /app directory from the official image, which contains Node.js app etc.
 
 # Copy root filesystem (run.sh etc.)
 COPY root /
@@ -47,7 +49,8 @@ COPY root /
 # Ensure the Audiobookshelf binary/script is executable.
 # The entrypoint is usually /app/index.js in the official image, but we're running it via run.sh
 # so ensure run.sh is executable and it calls the correct entrypoint.
-RUN chmod +x /usr/bin/audiobookshelf /app/server /run.sh # Add /app/server or whatever the main executable is if not audiobookshelf
+RUN chmod +x /usr/bin/audiobookshelf /app/server /run.sh 
+# Add /app/server or whatever the main executable is if not audiobookshelf
 
 # Set the entry point for the add-on.
 # This will be our run.sh script.

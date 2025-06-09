@@ -1,5 +1,5 @@
 name: "Audiobookshelf"
-version: "2.24.0b2"
+version: "2.24.0b3"
 slug: "audiobookshelf"
 description: "Host and stream your own audiobooks and podcasts with Audiobookshelf."
 url: "https://github.com/advplyr/audiobookshelf"
