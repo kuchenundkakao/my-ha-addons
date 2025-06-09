@@ -15,6 +15,7 @@ RUN cd / && \
 FROM sandreas/tone:v0.1.5 AS tone
 
 # https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+ARG BUILD_FROM
 FROM $BUILD_FROM
 #FROM ghcr.io/hassio-addons/base:14.3.2
 
