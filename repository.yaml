@@ -1,0 +1,4 @@
+# https://developers.home-assistant.io/docs/add-ons/repository/#repository-configuration
+name: "Kuchens eigene Addons" # You can name this anything you like, e.g., "My Audio Add-ons"
+url: "https://github.com/kuchenundkakao/my-ha-addons" # Replace with your actual GitHub repo URL
+maintainer: "Kuchen und Kakao" # Replace with your name or GitHub username
