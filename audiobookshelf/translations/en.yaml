@@ -1,22 +1,4 @@
 configuration:
-  data_directory:
-    name: Data Directory
-    description: Directory where Audiobookshelf stores its data
-  audiobooks_directories:
-    name: Audiobooks Directories  
-    description: List of directories containing your audiobooks
-  podcasts_directories:
-    name: Podcasts Directories
-    description: List of directories containing your podcasts
-  backup_directory:
-    name: Backup Directory
-    description: Directory for Audiobookshelf database backups
-  log_level:
-    name: Log Level
-    description: Controls the level of log output
-  host:
-    name: Host
-    description: Host address to bind to
-  port:
-    name: Port
-    description: Port to run on
+  message:
+    name: Message
+    description: The message that will be printed to the log when starting this example add-on.

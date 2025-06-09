@@ -1,18 +1,15 @@
-### CHANGELOG.md
-```markdown
-# Changelog
+<!-- https://developers.home-assistant.io/docs/add-ons/presentation#keeping-a-changelog -->
 
-## [1.0.0] - 2024-06-09
+## 1.2.0
 
-### Added
+- Add an apparmor profile
+- Update to 3.15 base image with s6 v3
+- Add a sample script to run as service and constrain in aa profile
+
+## 1.1.0
+
+- Updates
+
+## 1.0.0
+
 - Initial release
-- Audiobookshelf v2.15.2 support
-- Ingress integration
-- Configurable media directories
-- Multi-architecture support
-
-### Changed
-- N/A
-
-### Fixed
-- N/A

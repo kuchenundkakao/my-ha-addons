@@ -1,5 +1,7 @@
+ARG BUILD_FROM
 ## STAGE 0: Build Client ###
-FROM node:20-alpine AS build
+
+FROM node:16-alpine AS build
 ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.9.0.tar.gz /
 RUN cd / && \
     tar xvf v2.9.0.tar.gz && \
@@ -31,7 +33,8 @@ RUN apk update && \
     make \
     python3 \
     g++ \
-    npm
+    npm \
+    caddy
 
 ENV NODE_ENV=production
 
@@ -47,6 +50,7 @@ RUN npm ci --only=production
 
 RUN apk del make python3 g++
 
+EXPOSE 443
 EXPOSE 8081
 
-CMD ["node", "index.js"]
+#CMD ["node", "index.js"]

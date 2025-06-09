@@ -4,6 +4,4 @@
 # s6-overlay docs: https://github.com/just-containers/s6-overlay
 # ==============================================================================
 
-[ -d $METADATA_PATH ] || mkdir -p $METADATA_PATH
-[ -d $CONFIG_PATH ] || mkdir -p $METADATA_PATH
-exec node /index.js
+exec caddy run --environ --config /etc/caddy/Caddyfile
