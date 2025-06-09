@@ -1,45 +1,58 @@
 name: Audiobookshelf
-version: 2.24.0b11
+version: 2.24.0b12
 slug: audiobookshelf
 description: Self-hosted audiobook and podcast server
+url: https://github.com/advplyr/audiobookshelf
 arch:
   - armhf
   - armv7
   - aarch64
   - amd64
   - i386
-startup: services
-boot: auto
 init: false
+startup: application
+panel_icon: mdi:bookshelf
+panel_title: Audiobookshelf
+hassio_api: true
+hassio_role: default
+homeassistant_api: true
+auth_api: true
+host_network: true
+privileged:
+  - SYS_CHROOT
 map:
-  - share:rw
   - config:rw
+  - addons_config:rw
+  - share:rw
   - media:rw
+  - ssl:ro
 ports:
   13378/tcp: null
 ports_description:
-  13378/tcp: Web interface (disabled when using ingress)
+  13378/tcp: Web interface (Not required for Ingress)
 ingress: true
 ingress_port: 13378
 panel_icon: mdi:book-open-page-variant
 panel_title: Audiobookshelf
 panel_admin: false
 options:
+  data_directory: /config/audiobookshelf
+  audiobooks_directories:
+    - /media/audiobooks
+  podcasts_directories:
+    - /media/podcasts
+  backup_directory: /config/audiobookshelf/backups
   log_level: info
-  ssl: false
-  certfile: fullchain.pem
-  keyfile: privkey.pem
-  external_access: false
-  audiobooks_path: /share/audiobooks
-  podcasts_path: /share/podcasts
-  create_folders: true
+  host: "0.0.0.0"
+  port: 13378
 schema:
-  log_level: match(^(trace|debug|info|warn|error|fatal|off)$)
-  ssl: bool
-  certfile: str
-  keyfile: str
-  external_access: bool
-  audiobooks_path: str
-  podcasts_path: str
-  create_folders: bool
-image: ghcr.io/advplyr/audiobookshelf:{arch}-{version}
+  data_directory: str
+  audiobooks_directories:
+    - str
+  podcasts_directories:
+    - str
+  backup_directory: str
+  log_level: list(debug|info|warn|error)?
+  host: str?
+  port: int(1024,65535)?
+image: ghcr.io/advplyr/audiobookshelf
