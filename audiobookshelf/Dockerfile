@@ -1,3 +1,6 @@
+ARG BUILD_FROM
+FROM $BUILD_FROM
+
 ## STAGE 0: Build Client ###
 
 FROM node:20-alpine AS build
@@ -13,11 +16,6 @@ RUN cd / && \
 ## STAGE 1: Build Server ###
 
 FROM sandreas/tone:v0.1.5 AS tone
-
-# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
-ARG BUILD_FROM
-FROM $BUILD_FROM
-#FROM ghcr.io/hassio-addons/base:14.3.2
 
 # Execute during the build of the image
 ARG TEMPIO_VERSION BUILD_ARCH
