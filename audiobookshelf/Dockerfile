@@ -3,7 +3,7 @@ ARG BUILD_FROM=ghcr.io/hassio-addons/base:15.0.7
 FROM ${BUILD_FROM}
 
 # Argumente für Audiobookshelf Version
-ARG AUDIOBOOKSHELF_VERSION=2.15.2
+ARG AUDIOBOOKSHELF_VERSION=2.24.0
 
 # Umgebungsvariablen
 ENV \

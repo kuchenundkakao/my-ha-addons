@@ -1,8 +1,6 @@
 #!/usr/bin/with-contenv bashio
 
 # Konfiguration laden
-CONFIG_PATH=/data/options.json
-
 DATA_DIR=$(bashio::config 'data_directory')
 AUDIOBOOKS_DIRS=$(bashio::config 'audiobooks_directories')
 PODCASTS_DIRS=$(bashio::config 'podcasts_directories')
