@@ -13,7 +13,7 @@ FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app
 
 # Set the default shell for all subsequent RUN, CMD, and ENTRYPOINT instructions
 # to bash, with pipefail for better error handling in scripts.
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+SHELL ["/bin/ash", "-o", "pipefail", "-c"]
 
 # Install necessary system-level packages using apk (Alpine Linux's package manager).
 # The Home Assistant base images are typically Alpine-based.
