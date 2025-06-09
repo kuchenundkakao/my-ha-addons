@@ -1,5 +1,3 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
 # Stage 1: Build/fetch Audiobookshelf from its official image
 # This stage pulls the specified version of the official Audiobookshelf Docker image.
 # We use a specific version (2.24.0) for stability, but you can change it to 'latest'
@@ -9,7 +7,8 @@ FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app
 # Stage 2: Build the final add-on image based on the Home Assistant Supervisor's base image.
 # The ARG BUILD_FROM receives the architecture-specific base image (e.g., aarch64-base)
 # from the Home Assistant Supervisor during the build process.
-
+ARG BUILD_FROM
+FROM $BUILD_FROM
 
 # Set the default shell for all subsequent RUN, CMD, and ENTRYPOINT instructions
 # to bash, with pipefail for better error handling in scripts.
