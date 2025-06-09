@@ -1,34 +1,46 @@
-name: "Audiobookshelf"
-version: "2.24.0b10"
-slug: "audiobookshelf"
-description: "Host and stream your own audiobooks and podcasts with Audiobookshelf."
-url: "https://github.com/advplyr/audiobookshelf"
+name: Audiobookshelf
+version: 2.24.0b11
+slug: audiobookshelf
+description: Self-hosted audiobook and podcast server
+url: https://github.com/your-username/hassio-audiobookshelf
 arch:
+  - armhf
+  - armv7
   - aarch64
   - amd64
-init: false
-uart: false
+  - i386
 startup: services
 boot: auto
+init: false
+map:
+  - share:rw
+  - config:rw
+  - media:rw
 ports:
-  6800/tcp: 6800
+  13378/tcp: null
 ports_description:
-  6800/tcp: "Audiobookshelf Web Interface (HTTP)"
+  13378/tcp: Web interface (disabled when using ingress)
 ingress: true
-ingress_port: 6800
+ingress_port: 13378
+panel_icon: mdi:book-open-page-variant
+panel_title: Audiobookshelf
+panel_admin: false
 options:
-  log_level: "info"
-  MEDIA_DIR: "/media/audiobooks" # Default value for media directory
-  CONFIG_DIR: "/config/audiobookshelf" # Default value for config directory
+  log_level: info
+  ssl: false
+  certfile: fullchain.pem
+  keyfile: privkey.pem
+  external_access: false
+  audiobooks_path: /share/audiobooks
+  podcasts_path: /share/podcasts
+  create_folders: true
 schema:
-  log_level: "list(trace|debug|info|notice|warning|error|fatal)?"
-  MEDIA_DIR: "str?"
-  CONFIG_DIR: "str?"
-host_network: false
-full_access: false
-devices: []
-privileged: []
-hassio_api: false
-homeassistant_api: false
-host_pid: false
-host_ipc: false
+  log_level: match(^(trace|debug|info|warn|error|fatal|off)$)
+  ssl: bool
+  certfile: str
+  keyfile: str
+  external_access: bool
+  audiobooks_path: str
+  podcasts_path: str
+  create_folders: bool
+image: ghcr.io/advplyr/audiobookshelf:{arch}-{version}
