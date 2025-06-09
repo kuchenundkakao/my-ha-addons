@@ -2,7 +2,6 @@ name: Audiobookshelf
 version: 2.24.0b11
 slug: audiobookshelf
 description: Self-hosted audiobook and podcast server
-url: https://github.com/your-username/hassio-audiobookshelf
 arch:
   - armhf
   - armv7
