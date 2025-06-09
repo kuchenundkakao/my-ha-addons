@@ -12,6 +12,7 @@ RUN apk add --no-cache \
     # Add any other dependencies if Audiobookshelf's official image requires them that are not in the base HA image
     # For a full list of common packages, you might look at other HA add-ons' Dockerfiles.
     # We remove the old apt-get related commands entirely.
+    ;
 
 # The multi-stage build approach from our previous discussion is still the best way
 # to get the Audiobookshelf application itself. Let's combine them properly.
