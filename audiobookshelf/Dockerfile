@@ -42,4 +42,4 @@ RUN chmod +x /usr/bin/audiobookshelf /app/server /run.sh
 # Define the default command that the container will execute when it starts.
 # This points to our custom 'run.sh' script, which orchestrates the startup
 # of the Audiobookshelf application within the add-on environment.
-CMD ["/bin/bash", "/run.sh"]
+CMD ["/bin/ash", "/run.sh"]
