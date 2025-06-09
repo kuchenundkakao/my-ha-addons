@@ -1,7 +1,7 @@
 ## STAGE 0: Build Client ###
 
 FROM node:20-alpine AS build
-ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.24.0.tar.gz /
+ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.9.0.tar.gz /
 RUN cd / && \
     tar xvf v2.9.0.tar.gz && \
     cd /audiobookshelf-2.9.0/client/ && \
