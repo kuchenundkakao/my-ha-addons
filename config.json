@@ -1,0 +1,39 @@
+{
+  "name": "Audiobookshelf",
+  "version": "2.24.0",
+  "slug": "audiobookshelf",
+  "description": "Host and stream your own audiobooks and podcasts with Audiobookshelf.",
+  "url": "https://github.com/advplyr/audiobookshelf",
+  "arch": [
+    "aarch64",
+    "amd64"
+  ],
+  "init": false,
+  "uart": false,
+  "startup": "services",
+  "boot": "auto",
+  "ports": {
+    "6800/tcp": 6800
+  },
+  "ports_description": {
+    "6800/tcp": "Audiobookshelf Web Interface (HTTP)"
+  },
+  "ingress": true,
+  "ingress_port": 6800,
+  "options": {
+    "log_level": "info"
+  },
+  "schema": {
+    "log_level": "list(trace|debug|info|notice|warning|error|fatal)?",
+    "MEDIA_DIR": "str?",
+    "CONFIG_DIR": "str?"
+  },
+  "host_network": false,
+  "full_access": false,
+  "devices": [],
+  "privileged": [],
+  "hassio_api": false,
+  "homeassistant_api": false,
+  "host_pid": false,
+  "host_ipc": false
+}
