@@ -79,4 +79,4 @@ echo "[Info] Starting Audiobookshelf..."
 # This part of the script is preparing for that.
 # The `exec` command replaces the shell process with the Audiobookshelf process.
 # This is a common practice in Docker to ensure that signals (like stop) are handled correctly.
-exec /usr/bin/audiobookshelf
+exec /app/server
