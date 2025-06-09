@@ -1,58 +1,36 @@
+# Stage 1: Build/fetch Audiobookshelf from its official image
+# This stage pulls the official Audiobookshelf image and prepares its application files.
+FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app
+
+# Stage 2: Build the final add-on image based on the Home Assistant base image
+# This is the actual image that Home Assistant Supervisor will run.
 ARG BUILD_FROM
 FROM $BUILD_FROM
 
-# Set shell to bash for better scripting
+# Set shell to bash for robust script execution within the container.
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Install necessary packages for Audiobookshelf using apk (Alpine Linux package manager)
-# The HA base images are often Alpine-based, which uses apk.
+# Install necessary system-level packages using apk (Alpine Linux's package manager).
+# These packages (ffmpeg, imagemagick) are required by Audiobookshelf but might not be
+# present in the lean Home Assistant base image.
 RUN apk add --no-cache \
     ffmpeg \
     imagemagick \
-    # Add any other dependencies if Audiobookshelf's official image requires them that are not in the base HA image
-    # For a full list of common packages, you might look at other HA add-ons' Dockerfiles.
-    # We remove the old apt-get related commands entirely.
     ;
 
-# The multi-stage build approach from our previous discussion is still the best way
-# to get the Audiobookshelf application itself. Let's combine them properly.
-
-# Stage 1: Build/fetch Audiobookshelf from its official image
-FROM advplyr/audiobookshelf:2.24.0 AS audiobookshelf_app 
-# Or use a specific version like :2.11.1
-
-# Stage 2: Build the final add-on image based on the HA base image
-FROM $BUILD_FROM
-
-# Set shell to bash for better scripting
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# Install necessary packages using apk (Alpine Linux package manager)
-# These are packages that are expected to be on the *final* HA add-on image
-# and are often needed by Audiobookshelf or other components.
-RUN apk add --no-cache \
-    ffmpeg \
-    imagemagick \
-    # Add any other dependencies if the HA base image is minimal and Audiobookshelf needs them.
-    # Examples: 'ca-certificates' (often in base), 'curl', 'nodejs' (but ABS image already has Node)
-    # Check if the base HA image provides these by default; otherwise, install.
-    # For now, let's keep ffmpeg and imagemagick as those were in your original error.
-    ;
-
-# Copy the Audiobookshelf application files from the builder stage (audiobookshelf_app)
+# Copy the Audiobookshelf application files from the first stage (audiobookshelf_app)
+# This brings the core Audiobookshelf server and associated files into our final add-on image.
 COPY --from=audiobookshelf_app /usr/bin/audiobookshelf /usr/bin/audiobookshelf
-COPY --from=audiobookshelf_app /app /app 
-# Copy the entire /app directory from the official image, which contains Node.js app etc.
+COPY --from=audiobookshelf_app /app /app # Copy the main application directory
 
-# Copy root filesystem (run.sh etc.)
+# Copy our add-on specific files (like run.sh) into the container's root.
 COPY root /
 
-# Ensure the Audiobookshelf binary/script is executable.
-# The entrypoint is usually /app/index.js in the official image, but we're running it via run.sh
-# so ensure run.sh is executable and it calls the correct entrypoint.
-RUN chmod +x /usr/bin/audiobookshelf /app/server /run.sh 
-# Add /app/server or whatever the main executable is if not audiobookshelf
+# Ensure critical files (the Audiobookshelf server executable and our run.sh) are executable.
+# It's common for Node.js apps like ABS to have their main executable in /app/server
+# or rely on `node /app/index.js`. Let's ensure common paths are covered.
+RUN chmod +x /usr/bin/audiobookshelf /app/server /run.sh
 
-# Set the entry point for the add-on.
-# This will be our run.sh script.
+# Define the default command that will be executed when the container starts.
+# This points to our run.sh script, which handles starting Audiobookshelf.
 CMD ["/bin/bash", "/run.sh"]
