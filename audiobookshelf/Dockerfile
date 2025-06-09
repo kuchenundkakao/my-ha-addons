@@ -1,10 +1,7 @@
-ARG BUILD_FROM
-FROM $BUILD_FROM
-
 ## STAGE 0: Build Client ###
 
 FROM node:20-alpine AS build
-ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.9.0.tar.gz /
+ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.24.0.tar.gz /
 RUN cd / && \
     tar xvf v2.9.0.tar.gz && \
     cd /audiobookshelf-2.9.0/client/ && \
@@ -16,6 +13,10 @@ RUN cd / && \
 ## STAGE 1: Build Server ###
 
 FROM sandreas/tone:v0.1.5 AS tone
+
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+FROM $BUILD_FROM
+#FROM ghcr.io/hassio-addons/base:14.3.2
 
 # Execute during the build of the image
 ARG TEMPIO_VERSION BUILD_ARCH
