@@ -1,65 +1,53 @@
-# Home Assistant Add-on: Audiobookshelf
-ARG BUILD_FROM=ghcr.io/hassio-addons/base:15.0.7
-FROM ${BUILD_FROM}
+## STAGE 0: Build Client ###
 
-# Argumente für Audiobookshelf Version
-ARG AUDIOBOOKSHELF_VERSION=2.24.0
+FROM node:20-alpine AS build
+ADD https://github.com/advplyr/audiobookshelf/archive/refs/tags/v2.24.0.tar.gz /
+RUN cd / && \
+    tar xvf v2.9.0.tar.gz && \
+    cd /audiobookshelf-2.9.0/client/ && \
+    npm ci && npm cache clean --force \
+    npm install -g npm@10.2.4 && \
+    npm run generate && \
+    ls -l /audiobookshelf-2.9.0/client
 
-# Umgebungsvariablen
-ENV \
-    LANG="C.UTF-8" \
-    PS1="$(whoami)@$(hostname):$(pwd)$ " \
-    S6_BEHAVIOUR_IF_STAGE2_FAILS=2 \
-    S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0 \
-    S6_CMD_WAIT_FOR_SERVICES=1
+## STAGE 1: Build Server ###
 
-# System Update und Dependencies installieren
+FROM sandreas/tone:v0.1.5 AS tone
+
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-dockerfile
+FROM $BUILD_FROM
+#FROM ghcr.io/hassio-addons/base:14.3.2
+
+# Execute during the build of the image
+ARG TEMPIO_VERSION BUILD_ARCH
 RUN \
-    apk add --no-cache --virtual .build-deps \
-        build-base \
-        git \
-        python3-dev \
-        npm \
-    && apk add --no-cache \
-        curl \
-        ffmpeg \
-        nodejs \
-        npm \
-        tone \
-        jq \
-    && npm install -g npm@latest
+    curl -sSLf -o /usr/bin/tempio \
+    "https://github.com/home-assistant/tempio/releases/download/${TEMPIO_VERSION}/tempio_${BUILD_ARCH}"
 
-# Audiobookshelf installieren
-RUN \
-    git clone --branch v${AUDIOBOOKSHELF_VERSION} --depth 1 \
-        https://github.com/advplyr/audiobookshelf.git /tmp/audiobookshelf \
-    && cd /tmp/audiobookshelf \
-    && npm ci --only=production \
-    && mkdir -p /usr/app \
-    && cp -R /tmp/audiobookshelf/* /usr/app/ \
-    && cd /usr/app \
-    && npm ci --only=production \
-    && npm cache clean --force \
-    && apk del --no-cache --purge .build-deps \
-    && rm -rf \
-        /tmp/* \
-        /var/cache/apk/*
+RUN apk update && \
+    apk add --no-cache --update \
+    curl \
+    tzdata \
+    ffmpeg \
+    make \
+    python3 \
+    g++ \
+    npm
 
-# S6-Overlay Skripte kopieren
+ENV NODE_ENV=production
+
 COPY rootfs /
 
-# Berechtigungen setzen
-RUN chmod a+x /etc/services.d/audiobookshelf/run
+COPY --from=tone /usr/local/bin/tone /usr/local/bin/
+COPY --from=build /audiobookshelf-2.9.0/client/dist /client/dist
+COPY --from=build /audiobookshelf-2.9.0/server /server
+COPY --from=build /audiobookshelf-2.9.0/package* /
+COPY --from=build /audiobookshelf-2.9.0/index.js /
 
-# Labels
-LABEL \
-    io.hass.name="Audiobookshelf" \
-    io.hass.description="Self-hosted audiobook and podcast server" \
-    io.hass.arch="${BUILD_ARCH}" \
-    io.hass.type="addon" \
-    io.hass.version=${BUILD_VERSION} \
-    maintainer="Your Name <your.email@example.com>" \
-    org.opencontainers.image.title="Audiobookshelf" \
-    org.opencontainers.image.description="Self-hosted audiobook and podcast server" \
-    org.opencontainers.image.source="https://github.com/advplyr/audiobookshelf" \
-    org.opencontainers.image.licenses="GPL-3.0"
+RUN npm ci --only=production
+
+RUN apk del make python3 g++
+
+EXPOSE 8081
+
+CMD ["node", "index.js"]
