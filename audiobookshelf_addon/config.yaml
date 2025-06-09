@@ -18,6 +18,8 @@ ingress: true
 ingress_port: 6800
 options:
   log_level: "info"
+  MEDIA_DIR: "/media/audiobooks" # Default value for media directory
+  CONFIG_DIR: "/config/audiobookshelf" # Default value for config directory
 schema:
   log_level: "list(trace|debug|info|notice|warning|error|fatal)?"
   MEDIA_DIR: "str?"
